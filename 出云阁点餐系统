@@ -22,7 +22,7 @@ public class sign {
             if("root".equals(username)&&"root".equals(password)) {//判断账号密码是否正确
                 jf.dispose();
                 JOptionPane.showMessageDialog(jf, "登录成功");
-                dining();
+                new dining().inkt();
             }
             else{//输入错误，清空文本框
                 JOptionPane.showMessageDialog(jf,"账号或密码错误，请重新输入");
@@ -102,42 +102,43 @@ public class sign {
         reg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         reg.setVisible(true);
     }
+    public static void main(String[] args){
+        new sign().init();
+    }
+}
 
-    public void dining(){//点餐系统的界面
-        JFrame jFrame=new JFrame("出云阁点餐系统");
-        JMenuBar jMenuBar=new JMenuBar();
-        JMenu menu=new JMenu("查看菜单");
-        JMenuItem order=new JMenuItem(new AbstractAction("点餐") {
+
+    class dining {//点餐系统的界面
+        JFrame jFrame = new JFrame("出云阁点餐系统");
+        JMenuBar jMenuBar = new JMenuBar();
+        JMenu menu = new JMenu("查看菜单");
+        JMenuItem order = new JMenuItem(new AbstractAction("点餐") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JLabel food1=new JLabel("红烧肉");
-                JTextField foodonenum=new JTextField(2);
-                JButton foodone=new JButton(new AbstractAction("",new ImageIcon(".idea\\加号.jpg")) {
+                JLabel food1 = new JLabel("红烧肉");
+                JTextField foodonenum = new JTextField(2);
+                JButton foodone = new JButton(new AbstractAction("", new ImageIcon(".idea\\加号1.jpg")) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String result=JOptionPane.showInputDialog(jFrame,"请输入您要选择的餐品数量","输入框",JOptionPane.INFORMATION_MESSAGE);
+                        String result = JOptionPane.showInputDialog(jFrame, "请输入您要选择的餐品数量", "输入框", JOptionPane.INFORMATION_MESSAGE);
                         foodonenum.setText(result);
                     }
                 });
-                JPanel p5=new JPanel();
+                JPanel p5 = new JPanel();
                 p5.add(food1);
                 p5.add(foodone);
                 p5.add(foodonenum);
                 jFrame.add(p5);
             }
         });
+        public void inkt() {
 
+            menu.add(order);
+            jMenuBar.add(menu);
 
-
-        jMenuBar.add(menu);
-        menu.add(order);
-        jFrame.setJMenuBar(jMenuBar);
-        jFrame.setBounds(0,0,300,200);
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jFrame.setVisible(true);
+            jFrame.setJMenuBar(jMenuBar);
+            jFrame.setBounds(0, 0, 300, 200);
+            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jFrame.setVisible(true);
+        }
     }
-
-    public static void main(String[] args){
-        new sign().init();
-    }
-}
