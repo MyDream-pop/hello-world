@@ -48,6 +48,13 @@ public class sign{
         }
     });
 
+    JButton n4=new JButton(new AbstractAction("忘记密码") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            changepass();
+        }
+    });
+
     //p1放输入账号密码的文本框
     JPanel p1=new JPanel();
     p1.add(num);
@@ -60,6 +67,7 @@ public class sign{
     p2.add(n1);
     p2.add(n2);
     p2.add(n3);
+    p2.add(n4);
 
 
     jf.add(p1,BorderLayout.CENTER);
@@ -74,6 +82,8 @@ public class sign{
         JFrame reg=new JFrame("注册账号");
         JLabel num1=new JLabel("要注册的新账号:");
         JLabel pass1=new JLabel("要注册的新密码:");
+        JLabel phone=new JLabel("手机号码");
+        JTextField phonenum=new JTextField(8);
         JTextField number=new JTextField(8);
         JTextField password=new JTextField(8);
         JButton right=new JButton(new AbstractAction("确定注册") {
@@ -85,28 +95,80 @@ public class sign{
 
             }
         });
+
         JButton no=new JButton(new AbstractAction("取消注册") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 reg.dispose();
             }
         });
+
         JPanel p3=new JPanel();
         p3.add(right);
         p3.add(no);
         JPanel p4=new JPanel();
-        p4.add(num1);
-        p4.add(number);
-        p4.add(pass1);
-        p4.add(password);
+        JPanel p5=new JPanel();
+        JPanel p6=new JPanel();
+        JPanel p7=new JPanel();
+        p4.setLayout(new BorderLayout());
+        p5.add(num1);
+        p5.add(number);
+        p6.add(pass1);
+        p6.add(password);
+        p7.add(phone);
+        p7.add(phonenum);
+        p4.add(p5,BorderLayout.NORTH);
+        p4.add(p6,BorderLayout.CENTER);
+        p4.add(p7,BorderLayout.SOUTH);
         reg.add(p4,BorderLayout.CENTER);
         reg.add(p3,BorderLayout.SOUTH);
-        reg.pack();
+        reg.setBounds(300,200,400,180);
         reg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         reg.setVisible(true);
     }
 
-    class mainpro{
+    public void changepass(){
+        JFrame qp=new JFrame("修改密码");
+        JPanel p1=new JPanel();
+        JPanel p2=new JPanel();
+        JPanel p3=new JPanel();
+        JLabel phone=new JLabel("输入手机号码:");
+        JLabel password=new JLabel("输入新密码:");
+        JTextField phonenum=new JTextField(8);
+        JTextField passwordnum=new JTextField(8);
+
+        JButton l1=new JButton(new AbstractAction("确认修改") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                qp.dispose();
+                JOptionPane.showMessageDialog(qp,"修改成功");
+                String ph=phonenum.getText().trim();//取出手机号，取出新密码，在数据库中通过手机号定位修改
+                String ps=passwordnum.getText().trim();
+            }
+        });
+
+        JButton l2=new JButton(new AbstractAction("取消修改") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                qp.dispose();
+            }
+        });
+
+        p1.add(phone);
+        p1.add(phonenum);
+        p2.add(password);
+        p2.add(passwordnum);
+        p3.add(l1);
+        p3.add(l2);
+        qp.add(p1,BorderLayout.NORTH);
+        qp.add(p2,BorderLayout.CENTER);
+        qp.add(p3,BorderLayout.SOUTH);
+        qp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        qp.setBounds(300,200,300,150);
+        qp.setVisible(true);
+    }
+
+    class mainpro{//首页
         JFrame kf=new JFrame("出云阁");
         public void kit(){
             TitledBorder titlr =new TitledBorder(new LineBorder(Color.ORANGE,10),"欢迎来到出云阁",TitledBorder.LEFT,TitledBorder.BOTTOM,new Font("StSong",Font.ITALIC,18),Color.RED);
@@ -260,4 +322,3 @@ public class sign{
         new sign().init();
     }
 }
-
