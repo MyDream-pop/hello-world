@@ -1,17 +1,19 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class sign {
+public class sign{
     JFrame jf=new JFrame("登录窗口");
     private JLabel num=new JLabel("账号");
     private JLabel pass=new JLabel("密码");
-
     public void init(){
 
     JTextField text1=new JTextField(10);
     JPasswordField text2=new JPasswordField(10);
-
 
     JButton n1=new JButton(new AbstractAction("确定") {
         @Override
@@ -20,16 +22,16 @@ public class sign {
             String password=new String(text2.getPassword()).trim();
 
             if("root".equals(username)&&"root".equals(password)) {//判断账号密码是否正确
-                jf.dispose();
-                JOptionPane.showMessageDialog(jf, "登录成功");
-                new dining().inkt();
+                    jf.dispose();
+                    JOptionPane.showMessageDialog(jf, "登录成功");
+                    new mainpro().kit();
+                }
+                else{//输入错误，清空文本框
+                    JOptionPane.showMessageDialog(jf,"账号或密码错误，请重新输入");
+                    text1.setText("");
+                    text2.setText("");
+                }
             }
-            else{//输入错误，清空文本框
-                JOptionPane.showMessageDialog(jf,"账号或密码错误，请重新输入");
-                text1.setText("");
-                text2.setText("");
-            }
-        }
     });
 
     JButton n2=new JButton(new AbstractAction("注册") {
@@ -58,6 +60,7 @@ public class sign {
     p2.add(n1);
     p2.add(n2);
     p2.add(n3);
+
 
     jf.add(p1,BorderLayout.CENTER);
     jf.add(p2,BorderLayout.SOUTH);
@@ -102,43 +105,159 @@ public class sign {
         reg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         reg.setVisible(true);
     }
+
+    class mainpro{
+        JFrame kf=new JFrame("出云阁");
+        public void kit(){
+            TitledBorder titlr =new TitledBorder(new LineBorder(Color.ORANGE,10),"欢迎来到出云阁",TitledBorder.LEFT,TitledBorder.BOTTOM,new Font("StSong",Font.ITALIC,18),Color.RED);
+            kf.add(get(titlr));
+            kf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            kf.setBounds(300,200,600,400);
+            kf.setVisible(true);
+        }
+        public JPanel get(Border bod){
+            JPanel p1=new JPanel();
+            JPanel p2=new JPanel();
+            JButton mainbut1=new JButton(new AbstractAction("进入点餐系统") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    kf.dispose();
+                    new setJf().it();
+                }
+            });
+
+            JButton mainbut2=new JButton(new AbstractAction("查看用户信息") {
+                @Override
+                public void actionPerformed(ActionEvent e) {//后续补充
+                    kf.dispose();
+                }
+            });
+
+            JLabel name=new JLabel("请选择您要进行的操作");
+            p1.setLayout(new BorderLayout());
+            name.setHorizontalAlignment(SwingConstants.CENTER);
+            p1.add(name,BorderLayout.NORTH);
+            p2.add(mainbut1);
+            p2.add(mainbut2);
+            p1.add(p2,BorderLayout.CENTER);
+            p1.setBorder(bod);
+            return p1;
+        }
+
+    }
+
+    class setJf {
+        JFrame sef=new JFrame("您好，尊敬的用户");
+        private JList<String> dishList;
+        private DefaultListModel<String> dishListModel;
+        private JTextField quantityField;
+        private JButton addToCartButton;
+        private JList<String> cashList;
+        private DefaultListModel<String> cashListModel;
+        private JButton checkoutButton;
+        private JLabel totalLabel;
+        private JLabel quantityLabel;
+        private double total = 0;
+        public void it(){
+
+            dishListModel=new DefaultListModel<>();
+            dishListModel.addElement("宫保鸡丁 - $10");
+            dishListModel.addElement("麻婆豆腐 - $8");
+            dishListModel.addElement("青椒肉丝 - $12");
+            dishListModel.addElement("鱼香茄子 - $9");
+            dishList=new JList<>(dishListModel);
+            JScrollPane jScrollPane1=new JScrollPane(dishList);
+            sef.add(jScrollPane1,BorderLayout.NORTH);
+
+            //购物车
+            cashListModel=new DefaultListModel<>();
+            cashList=new JList<>(cashListModel);
+            JScrollPane jScrollPane2=new JScrollPane(cashList);
+            sef.add(jScrollPane2,BorderLayout.CENTER);
+
+            //结账
+            JPanel moneypanel=new JPanel(new GridLayout(2,2,5,5));
+            quantityField=new JTextField(8);
+            quantityLabel=new JLabel("需要添加的数量:");
+            addToCartButton=new JButton(new AbstractAction("添加到购物车") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int quantity = Integer.parseInt(quantityField.getText().trim());
+                    String selectedValue = dishList.getSelectedValue();
+                    if (selectedValue != null && quantity > 0) {
+                        for (int i = 0; i < quantity; i++) {
+                            cashListModel.addElement(selectedValue);
+                        }
+                        updateTotal(selectedValue);
+                        quantityField.setText("");
+                    }
+                }
+            });
+
+            checkoutButton=new JButton(new AbstractAction("结账") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(!cashListModel.isEmpty()){
+                        JOptionPane.showMessageDialog(sef,"订单已提交,总计:$"+total);
+                        clearcash();
+                        quantityField.setText("");
+                    }else {
+                        JOptionPane.showMessageDialog(sef,"购物车为空!");
+                    }
+
+                }
+            });
+
+            JButton cutcash=new JButton(new AbstractAction("清空购物车") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    clearcash();
+                }
+            });
+
+
+
+            totalLabel=new JLabel("总计:$0");
+            moneypanel.add(quantityLabel);
+            moneypanel.add(quantityField);
+            moneypanel.add(addToCartButton);
+            moneypanel.add(checkoutButton);
+            moneypanel.add(cutcash);
+            moneypanel.add(totalLabel);
+
+            JPanel bottomPanel = new JPanel(new FlowLayout());
+            bottomPanel.add(moneypanel);
+            sef.add(bottomPanel,BorderLayout.SOUTH);
+
+            sef.setBounds(300,200,600,400);
+            sef.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            sef.setVisible(true);
+        }
+        private void updateTotal(String dish) {
+            String[] parts = dish.split(" - ");
+            if (parts.length == 2) {
+                try {
+                    double price = Double.parseDouble(parts[1].replace("$", ""));
+                    int quantity = Integer.parseInt(quantityField.getText().trim());
+                    total += price * quantity;
+                    totalLabel.setText("总计: $" + total);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(sef, "输入的数量无效！");
+                }
+            }
+        }
+
+        private void clearcash(){
+            cashListModel.clear();
+            total=0;
+            totalLabel.setText("总计:$0");
+        }
+    }
+
+
+
     public static void main(String[] args){
         new sign().init();
     }
 }
 
-
-    class dining {//点餐系统的界面
-        JFrame jFrame = new JFrame("出云阁点餐系统");
-        JMenuBar jMenuBar = new JMenuBar();
-        JMenu menu = new JMenu("查看菜单");
-        JMenuItem order = new JMenuItem(new AbstractAction("点餐") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JLabel food1 = new JLabel("红烧肉");
-                JTextField foodonenum = new JTextField(2);
-                JButton foodone = new JButton(new AbstractAction("", new ImageIcon(".idea\\加号1.jpg")) {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String result = JOptionPane.showInputDialog(jFrame, "请输入您要选择的餐品数量", "输入框", JOptionPane.INFORMATION_MESSAGE);
-                        foodonenum.setText(result);
-                    }
-                });
-                JPanel p5 = new JPanel();
-                p5.add(food1);
-                p5.add(foodone);
-                p5.add(foodonenum);
-                jFrame.add(p5);
-            }
-        });
-        public void inkt() {
-
-            menu.add(order);
-            jMenuBar.add(menu);
-
-            jFrame.setJMenuBar(jMenuBar);
-            jFrame.setBounds(0, 0, 300, 200);
-            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            jFrame.setVisible(true);
-        }
-    }
