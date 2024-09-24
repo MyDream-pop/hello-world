@@ -21,11 +21,21 @@ public class sign{
             String username=text1.getText().trim();//输入账号密码
             String password=new String(text2.getPassword()).trim();
 
-            if("root".equals(username)&&"root".equals(password)) {//判断账号密码是否正确
-                    jf.dispose();
+            //未接数据库，先用else if区分用户和管理员登录
+            if("user".equals(username)&&"user".equals(password)) {//判断用户账号密码是否正确
                     JOptionPane.showMessageDialog(jf, "登录成功");
+                    text1.setText("");
+                    text2.setText("");
                     new mainpro().kit();
                 }
+                else if("root".equals(username)&&"root".equals(password)){
+                    JOptionPane.showMessageDialog(jf,"你好,管理员");
+                    text1.setText("");
+                    text2.setText("");
+                    new managerpro().mit();
+                }
+
+
                 else{//输入错误，清空文本框
                     JOptionPane.showMessageDialog(jf,"账号或密码错误，请重新输入");
                     text1.setText("");
@@ -78,7 +88,8 @@ public class sign{
     jf.setVisible(true);
     }
 
-    public void register(){
+
+    public void register(){//注册账号
         JFrame reg=new JFrame("注册账号");
         JLabel num1=new JLabel("要注册的新账号:");
         JLabel pass1=new JLabel("要注册的新密码:");
@@ -127,7 +138,8 @@ public class sign{
         reg.setVisible(true);
     }
 
-    public void changepass(){
+
+    public void changepass(){//修改密码
         JFrame qp=new JFrame("修改密码");
         JPanel p1=new JPanel();
         JPanel p2=new JPanel();
@@ -168,12 +180,13 @@ public class sign{
         qp.setVisible(true);
     }
 
-    class mainpro{//首页
+
+    class mainpro{//用户首页
         JFrame kf=new JFrame("出云阁");
         public void kit(){
             TitledBorder titlr =new TitledBorder(new LineBorder(Color.ORANGE,10),"欢迎来到出云阁",TitledBorder.LEFT,TitledBorder.BOTTOM,new Font("StSong",Font.ITALIC,18),Color.RED);
             kf.add(get(titlr));
-            kf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            kf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             kf.setBounds(300,200,600,400);
             kf.setVisible(true);
         }
@@ -208,20 +221,22 @@ public class sign{
 
     }
 
-    class setJf {
+
+    class setJf {//用户界面
         JFrame sef=new JFrame("您好，尊敬的用户");
-        private JList<String> dishList;
-        private DefaultListModel<String> dishListModel;
-        private JTextField quantityField;
-        private JButton addToCartButton;
-        private JList<String> cashList;
-        private DefaultListModel<String> cashListModel;
-        private JButton checkoutButton;
-        private JLabel totalLabel;
-        private JLabel quantityLabel;
-        private double total = 0;
+        public DefaultListModel<String> dishListModel;
+        public JList<String> dishList;
+        public JTextField quantityField;
+        public JButton addToCartButton;
+        public JList<String> cashList;
+        public DefaultListModel<String> cashListModel;
+        public JButton checkoutButton;
+        public JLabel totalLabel;
+        public JLabel quantityLabel;
+        public double total = 0;
         public void it(){
 
+            //从数据库中拿菜品数据放进去
             dishListModel=new DefaultListModel<>();
             dishListModel.addElement("宫保鸡丁 - $10");
             dishListModel.addElement("麻婆豆腐 - $8");
@@ -230,6 +245,7 @@ public class sign{
             dishList=new JList<>(dishListModel);
             JScrollPane jScrollPane1=new JScrollPane(dishList);
             sef.add(jScrollPane1,BorderLayout.NORTH);
+
 
             //购物车
             cashListModel=new DefaultListModel<>();
@@ -292,9 +308,10 @@ public class sign{
             sef.add(bottomPanel,BorderLayout.SOUTH);
 
             sef.setBounds(300,200,600,400);
-            sef.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            sef.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             sef.setVisible(true);
         }
+
         private void updateTotal(String dish) {
             String[] parts = dish.split(" - ");
             if (parts.length == 2) {
@@ -314,8 +331,88 @@ public class sign{
             total=0;
             totalLabel.setText("总计:$0");
         }
+
     }
 
+
+    class managerpro{//管理员界面
+        public DefaultListModel<String> dishListModel;
+        public JList<String> dishList;
+        JFrame managerjframe=new JFrame("出云阁后台管理");
+        public void mit(){
+        //没有数据库先重新做个菜单，有了之后导入数据库
+        dishListModel=new DefaultListModel<>();
+        dishListModel.addElement("宫保鸡丁 - $10");
+        dishListModel.addElement("麻婆豆腐 - $8");
+        dishListModel.addElement("青椒肉丝 - $12");
+        dishListModel.addElement("鱼香茄子 - $9");
+        dishList=new JList<>(dishListModel);
+
+        JPanel p2=new JPanel();
+        JTextField food=new JTextField(8);
+        JTextField moneynum=new JTextField(2);
+        JLabel foodname=new JLabel("餐品名称:");
+        JLabel money=new JLabel("金额:");
+        JMenuBar jMenuBar=new JMenuBar();
+
+        JButton n1=new JButton(new AbstractAction("添加") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String foodText = food.getText().trim();
+                String moneyText = moneynum.getText().trim();
+                if (!foodText.isEmpty() && !moneyText.isEmpty()) {
+                    //要同时将其输入数据库
+
+                    dishListModel.addElement(foodText+" - $"+moneyText);
+                    food.setText("");
+                    moneynum.setText("");
+                }
+            }
+        });
+
+        JButton n2=new JButton(new AbstractAction("删除") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedValue = dishList.getSelectedValue();
+                //在数据库中找到并删除,同时在该界面也删除
+                if(!selectedValue.isEmpty()){
+                    dishListModel.removeElement(selectedValue);
+                    dishList.updateUI();
+                }
+
+            }
+        });
+
+        JMenu foodmanager=new JMenu("菜单管理");
+
+        JMenuItem foodchange=new JMenuItem(new AbstractAction("修改菜单") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JScrollPane p1=new JScrollPane(dishList);
+                p2.removeAll();
+                p2.add(foodname);
+                p2.add(food);
+                p2.add(money);
+                p2.add(moneynum);
+                p2.add(n1);
+                p2.add(n2);
+                p2.revalidate();
+                p2.repaint();
+
+                managerjframe.add(p1,BorderLayout.CENTER);
+                managerjframe.add(p2,BorderLayout.SOUTH);
+            }
+        });
+
+        foodmanager.add(foodchange);
+        jMenuBar.add(foodmanager);
+        managerjframe.setJMenuBar(jMenuBar);
+        managerjframe.setBounds(300,200,400,300);
+        managerjframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        managerjframe.setVisible(true);
+
+        }
+    }
 
 
     public static void main(String[] args){
